@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.yy.yy_delicacy.repository.DelicacyRepository">
+    <resultMap id="DelicacyResult" type="Delicacy">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="tId" column="t_id"/>
+        <result property="address" column="address"/>
+        <result property="average" column="average" typeHandler="whut.yy.yy_delicacy.converter.MoneyTypeHandler"/>
+        <result property="imgPath" column="img_path"/>
+        <result property="rate" column="rate"/>
+    </resultMap>
+
+    <insert id="addDelicacy" parameterType="Delicacy" useGeneratedKeys="true" keyProperty="id">
+        insert into delicacy (name, t_id, address, average, img_path, rate)
+        values (#{name}, #{tId}, #{address}, #{average,typeHandler=whut.yy.yy_delicacy.converter.MoneyTypeHandler},
+                #{imgPath}, #{rate});
+    </insert>
+
+    <update id="updateDelicacy" parameterType="Delicacy">
+        update delicacy
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="tId != null and tId != ''">t_id = #{tId},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="imgPath != null and imgPath != ''">img_path = #{imgPath},</if>
+            <if test="rate != null and rate != ''">rate = #{rate},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDelicacy" parameterType="integer">
+        delete
+        from delicacy
+        where id = #{id}
+    </delete>
+
+    <select id="getAll" resultMap="DelicacyResult">
+        select *
+        from delicacy
+        <include refid="condition"/>
+    </select>
+
+    <select id="getByUserId" resultMap="DelicacyResult">
+        SELECT d.*
+        FROM delicacy d
+        RIGHT JOIN delicacy_user du ON d.id = du.d_id
+        <include refid="condition1"/>
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="name!= null and name != ''">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="tId != null">
+                and t_id = #{tId}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="condition1">
+        <where>
+            du.u_id = #{uId}
+            <if test="name!= null and name != ''">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="tId != null">
+                and t_id = #{tId}
+            </if>
+        </where>
+    </sql>
+</mapper>

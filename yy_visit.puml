@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+(网关gateway) as (gateway)
+(地图服务yy-map) as (yy-map)
+(美食店铺服务yy-delicacy) as (yy-delicacy)
+(用户服务yy-user) as (yy-user)
+
+User -> (gateway)
+
+(gateway) --> (yy-map)
+(gateway) --> (yy-delicacy)
+(gateway) --> (yy-user)
+
+(yy-map) -> (yy-delicacy)
+
+
+@enduml
